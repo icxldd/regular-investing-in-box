@@ -14,40 +14,36 @@ number_of_rows = series.shape[0]
 daily_invested = 1
 
 # add column "Total Invested"
-total_invested = []
-for i in range(0, number_of_rows):
-    total_invested.append((i+1)*daily_invested)
+total_invested = [(i+1)*daily_invested for i in range(number_of_rows)]
 series["Total Invested"] = total_invested
 
 # add column "Daily Bought"
-BOX_daily_bought = []
-for i in range(0, number_of_rows):
-    BOX_daily_bought.append(daily_invested/float(sub(r"[^\d.]", "", series.at[i, "BOX Price"])))
+BOX_daily_bought = [
+    daily_invested / float(sub(r"[^\d.]", "", series.at[i, "BOX Price"]))
+    for i in range(number_of_rows)
+]
 
 series["BOX Bought"] = BOX_daily_bought
 
 # add column "BOX Value Accumulated"
 BOX_value_accumulated = []
-for i in range(0, number_of_rows):
-    holding = 0
-    for j in range(0, i+1):
-        holding += series.at[j, "BOX Bought"]
+for i in range(number_of_rows):
+    holding = sum(series.at[j, "BOX Bought"] for j in range(i+1))
     BOX_value_accumulated.append(holding * float(sub(r"[^\d.]", "", series.at[i, "BOX Price"])))
 series["BOX Value Accumulated"] = BOX_value_accumulated    
 
 # add column "BTC Daily Bought"
-BTC_daily_bought = []
-for i in range(0, number_of_rows):
-    BTC_daily_bought.append(daily_invested/float(sub(r"[^\d.]", "", series.at[i, "BTC Price"])))
+BTC_daily_bought = [
+    daily_invested / float(sub(r"[^\d.]", "", series.at[i, "BTC Price"]))
+    for i in range(number_of_rows)
+]
 
 series["BTC Bought"] = BTC_daily_bought
 
 # add column "BTC Value Accumulated"
 BTC_value_accumulated = []
-for i in range(0, number_of_rows):
-    holding = 0
-    for j in range(0, i+1):
-        holding += series.at[j, "BTC Bought"]
+for i in range(number_of_rows):
+    holding = sum(series.at[j, "BTC Bought"] for j in range(i+1))
     BTC_value_accumulated.append(holding * float(sub(r"[^\d.]", "", series.at[i, "BTC Price"])))
 series["BTC Value Accumulated"] = BTC_value_accumulated   
 
@@ -61,14 +57,14 @@ ri_box_change = []
 ri_btc_change = []
 base = []
 
-for i in range(0, number_of_rows):
+for i in range(number_of_rows):
     btc_price_change.append(float(sub(r"[^\d.]", "", series.at[i, "BTC Price"]))/float(sub(r"[^\d.]", "", series.at[0, "BTC Price"])) - 1)
 #     eos_price_change.append(float(sub(r"[^\d.]", "", series.at[i, "EOS Price"]))/float(sub(r"[^\d.]", "", series.at[0, "EOS Price"])) - 1)
 #     xin_price_change.append(float(sub(r"[^\d.]", "", series.at[i, "XIN Price"]))/float(sub(r"[^\d.]", "", series.at[0, "XIN Price"])) - 1)
     box_price_change.append(float(sub(r"[^\d.]", "", series.at[i, "BOX Price"]))/float(sub(r"[^\d.]", "", series.at[0, "BOX Price"])) - 1)    
     ri_box_change.append(series.at[i, "BOX Value Accumulated"]/series.at[i, "Total Invested"] - 1)
     ri_btc_change.append(series.at[i, "BTC Value Accumulated"]/series.at[i, "Total Invested"] - 1)
-    
+
     base.append(0)
 
 series["BTC"] = btc_price_change
@@ -88,7 +84,7 @@ RIBOX_Change = pstring("{0:.2%}".format(float(series.at[number_of_rows - 1, "BOX
 
 # draw the figure
 ax = plt.gca()
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y))) 
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
 # series.plot(kind='line', x='Date', y='BTC', ax=ax, figsize = (20,10), color="red")
 # series.plot(kind='line', x='Date', y='EOS', ax=ax, figsize = (20,10), color="brown")
 # series.plot(kind='line', x='Date', y='XIN', ax=ax, figsize = (20,10), color="purple")
