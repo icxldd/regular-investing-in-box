@@ -11,7 +11,7 @@ from datetime import date
 # results = soup.find('span', class_='cmc-details-panel-price__price')
 # for result in results:
 #     btc_price = result
-    
+
 # URL = 'https://coinmarketcap.com/currencies/eos/markets/'
 # page = requests.get(URL)
 # soup = BeautifulSoup(page.content, 'html.parser')
@@ -55,9 +55,8 @@ uni_price = '${:,.2f}'.format(float(UNIresponse['data']['close']))
 
 box_price = '${:,.2f}'.format((float(sub(r'[^\d.]', '', btc_price)) * 1 + float(sub(r'[^\d.]', '', eos_price)) * 300 + float(sub(r'[^\d.]', '', xin_price)) * 8 + float(sub(r'[^\d.]', '', eth_price)) * 1 + float(sub(r'[^\d.]', '', dot_price)) * 50 + float(sub(r'[^\d.]', '', mob_price)) * 100 + float(sub(r'[^\d.]', '', uni_price)) * 100)/10000)
 0
-f = open("/root/regular-investing-in-box/data/box_price_history.txt", "a")
-f.write(todaysdate + '\t' + btc_price + '\t' + eos_price + '\t' + xin_price  + '\t' + eth_price  + '\t' + dot_price  + '\t' + mob_price  + '\t' + uni_price  + '\t' + box_price +'\r')
-f.close()
+with open("/root/regular-investing-in-box/data/box_price_history.txt", "a") as f:
+    f.write(todaysdate + '\t' + btc_price + '\t' + eos_price + '\t' + xin_price  + '\t' + eth_price  + '\t' + dot_price  + '\t' + mob_price  + '\t' + uni_price  + '\t' + box_price +'\r')
 
 # on MacOSX, in terminal:
 # > ctrontab -e
